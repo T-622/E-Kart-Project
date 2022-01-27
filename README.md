@@ -8,3 +8,7 @@ Features:
 - Power managment
 - User interface
 - Various datalogging features
+
+Current Code:
+- Audio synth [Teensy-Audio-System.ino] + [Samples.h] containing audio synth software
+- CAN BUS example software [CAN-Transmitter] and [CAN-Reciever] .ino sketches
