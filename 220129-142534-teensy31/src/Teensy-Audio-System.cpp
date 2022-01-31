@@ -15,7 +15,7 @@ void setup() {
   Serial.begin(9600);
 }
 void loop() {
-  idleSound(4);
+  idleSound(4); 
 }
 
 void stroke4T(int rpm) {
