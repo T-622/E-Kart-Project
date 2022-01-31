@@ -8,7 +8,7 @@ int count = 0;
 void stroke4T(int rpm);
 void stroke2T(int rpm);
 void electricSound(int rpm);
-void idleSound(int mode);
+void idleSound(int mode); 
 
 void setup() {
   analogWriteResolution(12);
