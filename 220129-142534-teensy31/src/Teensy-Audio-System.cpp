@@ -21,7 +21,7 @@ void loop() {
 void stroke4T(int rpm) {
   ranDistort = random(-150, 51);
   rpm = map(rpm, 0, 6100, 30, 3);
-  for (int i = 0; i < 4096; i++) {
+  for (int i = 0; i < 4095; i++) {
     analogWrite(A14, realNoise4T[i] + ranDistort);
     delayMicroseconds(rpm);
   }
