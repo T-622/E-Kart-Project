@@ -12,3 +12,8 @@ Features:
 Current Code:
 - Audio synth [Teensy-Audio-System.ino] + [Samples.h] containing audio synth software
 - CAN BUS example software [CAN-Transmitter] and [CAN-Reciever] .ino sketches
+
+To Do:
+- SD access to load ONLY required waveforms into memory (Free up space)
+- Random noise generator
+- CAN bus access for VESC?
