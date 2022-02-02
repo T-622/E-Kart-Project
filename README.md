@@ -14,6 +14,8 @@ Current Code:
 - CAN BUS example software [CAN-Transmitter] and [CAN-Reciever] .ino sketches
 
 To Do:
-- SD access to load ONLY required waveforms into memory (Free up space)
 - Random noise generator
 - CAN bus access for VESC?
+
+Done:
+- SD card read function. This reads and parses a string of data on an SD card with required waveform points and only stores the desired waveforms in memory rather than storing all of them <Samples.h>
