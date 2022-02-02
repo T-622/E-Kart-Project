@@ -8,6 +8,7 @@ Features:
 - Power managment
 - User interface
 - Various datalogging features
+- SD card audio
 
 Current Code:
 - Audio synth [Teensy-Audio-System.ino] + [Samples.h] containing audio synth software
