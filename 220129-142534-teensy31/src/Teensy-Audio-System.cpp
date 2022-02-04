@@ -9,6 +9,7 @@ int ranDelay = 0;
 int COUNT_TOP = 0;
 int count = 0;
 int mode = 0;
+int analog = 0;
 int SYNC_OUT = 6;
 int realNoise4T[5825];
 float realNoise2T[255];
@@ -18,10 +19,6 @@ bool state = false;
 SdFs sd;
 FsFile soundByte;
 
-void stroke4T(int rpm);
-void stroke2T(int rpm);
-void electricSound(int rpm);
-void idleSound(int mode); 
 void load4T();
 void load2T();
 void loadElectric();
@@ -45,29 +42,10 @@ void setup() {
 }
 void loop() {
    /*------Code Here (Nothing currently as timer is running system)------*/
+  analog = analogRead(A9);
+  analog = map(analog, 0, 4096, 35, 18);
+  timer4T.update(analog);
 }
-
-void idleSound(int mode) {                       // Usage of electric, 2T and 4T strokes to create "Idle" sound (Safety Purposes)
-  switch (mode) {
-    case 4:
-      for (int i = 0; i < 4096; i++) {
-        analogWrite(A14, realNoise4T[i]);
-        delayMicroseconds(25);
-      }
-      for (int i = 0; i < 1729; i++) {
-        analogWrite(A14, realNoise4T[i]);
-        delayMicroseconds(25);
-      }
-      break;
-    case 2:
-      for (int i = 0; i < 255; i++) {
-        analogWrite(A14, realNoise2T[i]);
-        delayMicroseconds(700);
-      }
-      break;
-  }
-}
-
 
 void load2T(){
     soundByte = sd.open("2T.txt", O_READ);
