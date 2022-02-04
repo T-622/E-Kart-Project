@@ -2,15 +2,18 @@
 #include <SPI.h>
 #include <SdFat.h>
 //#include "Samples.h"
+IntervalTimer timer4T;
 #define SD_CS 10
 int ranDistort = 0;
 int ranDelay = 0;
-int analog = 0;
+int COUNT_TOP = 0;
 int count = 0;
-float realNoise4T[4096];
-float realNoise4T2[1729];
+int mode = 0;
+int SYNC_OUT = 6;
+int realNoise4T[5825];
 float realNoise2T[255];
 float realNoiseElectric[2674];
+bool state = false;
 
 SdFs sd;
 FsFile soundByte;
@@ -22,8 +25,11 @@ void idleSound(int mode);
 void load4T();
 void load2T();
 void loadElectric();
+void Emulator();
 
 void setup() {
+  mode = 0;
+  pinMode(SYNC_OUT, OUTPUT);
   analogWriteResolution(12);                        // Analog R/W resolution change (Dumb down to ~10 bits for lower mem usage)
   analogReadResolution(12);
   Serial.begin(9600);
@@ -35,39 +41,10 @@ void setup() {
   }
   Serial.println("SD Initialization complete");
   load4T();
-  Serial.println(realNoise4T[1]);
+  timer4T.begin(Emulator, 22.67);
 }
 void loop() {
-  idleSound(4);                                     // Start with idle sound from 4T kart
-}
-
-void stroke4T(int rpm) {                            // Synthesize sound of a stroke (Fire) of a 4T pulse
-  ranDistort = random(-150, 51);
-  rpm = map(rpm, 0, 6100, 30, 3);
-  for (int i = 0; i < 4095; i++) {
-    analogWrite(A14, realNoise4T[i] + ranDistort);
-    delayMicroseconds(rpm);
-  }
-  for (int i = 0; i < 1729; i++) {
-    analogWrite(A14, realNoise4T2[i] + ranDistort);
-    delayMicroseconds(rpm);
-  }
-}
-
-void stroke2T(int rpm) {                            // Synthesize sound of a stroke (Fire) of a 2T pulse
-  rpm = map(rpm, 0, 13000, 800, 250);
-  for (int i = 0; i < 255; i++) {
-    analogWrite(A14, realNoise2T[i]);
-    delayMicroseconds(rpm);
-  }
-}
-
-void electricSound(int rpm) {                       // Synthesize sound of revolution in an electric motor (Taycan Turbo as ref)
-  rpm = map(rpm, 0, 7000, 45, 10);
-  for (int i = 0; i < 2674; i++) {
-    analogWrite(A14, realNoiseElectric[i] + 100);
-    delayMicroseconds(rpm);
-  }
+   /*------Code Here (Nothing currently as timer is running system)------*/
 }
 
 void idleSound(int mode) {                       // Usage of electric, 2T and 4T strokes to create "Idle" sound (Safety Purposes)
@@ -75,11 +52,11 @@ void idleSound(int mode) {                       // Usage of electric, 2T and 4T
     case 4:
       for (int i = 0; i < 4096; i++) {
         analogWrite(A14, realNoise4T[i]);
-        delayMicroseconds(28);
+        delayMicroseconds(25);
       }
       for (int i = 0; i < 1729; i++) {
         analogWrite(A14, realNoise4T[i]);
-        delayMicroseconds(28);
+        delayMicroseconds(25);
       }
       break;
     case 2:
@@ -104,15 +81,11 @@ void load2T(){
 
 void load4T(){
     soundByte = sd.open("4T.txt", O_READ);
-    for(int i = 0; i < 4096; i++){
+    for(int i = 0; i < 5825; i++){
     realNoise4T[i] = soundByte.parseFloat();
     }
-    soundByte = sd.open("4T2.txt", O_READ);
-    for(int i = 0; i < 1729; i++){
-    realNoise4T2[i] = soundByte.parseFloat();
-    }
     Serial.print("Loaded ");
-    Serial.print(sizeof(realNoise4T) + sizeof(realNoise4T2));
+    Serial.print(sizeof(realNoise4T));
     Serial.print(" bytes");
 
 }
@@ -126,5 +99,36 @@ void load4T(){
     Serial.print(sizeof(realNoiseElectric));
     Serial.print(" bytes");
 
+  }
+
+  void Emulator(){
+  state = !state;
+  digitalWrite(SYNC_OUT, state);
+  COUNT_TOP++;
+    switch(mode){
+    case 0:
+    if (COUNT_TOP == 4096){
+      COUNT_TOP = 0;
+    } else {
+      analogWrite(A14, realNoise4T[COUNT_TOP] + ranDistort);
+    }
+    break;
+
+    case 1:
+    if (COUNT_TOP == 255){
+      COUNT_TOP = 0;
+    } else {
+      analogWrite(A14, realNoise2T[COUNT_TOP] + ranDistort);
+    }
+    break;
+
+    case 2:
+    if (COUNT_TOP == 255){
+      COUNT_TOP = 0;
+    } else {
+      analogWrite(A14, realNoiseElectric[COUNT_TOP] + 100);
+    }
+    break;
+    }
   }
 
