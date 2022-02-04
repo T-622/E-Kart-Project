@@ -1,24 +1,22 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include <SdFat.h>
-//#include "Samples.h"
-IntervalTimer timer4T;
 #define SD_CS 10
-int ranDistort = 0;
-int ranDelay = 0;
-int COUNT_TOP = 0;
-int count = 0;
-int mode = 0;
-int analog = 0;
-int SYNC_OUT = 6;
-int realNoise4T[5825];
-float realNoise2T[255];
-float realNoiseElectric[2674];
+IntervalTimer timer4T;
+uint16_t COUNT_TOP = 0;
+uint16_t count = 0;
+uint16_t mode = 0;
+uint16_t analog = 0;
+uint16_t SYNC_OUT = 6;
+uint16_t realNoise4T[5825];
+uint16_t realNoise2T[255];
+uint16_t realNoiseElectric[2674];
 bool state = false;
 
 SdFs sd;
 FsFile soundByte;
-
+void setup();
+void loop();
 void load4T();
 void load2T();
 void loadElectric();
@@ -59,7 +57,7 @@ void load2T(){
 
 void load4T(){
     soundByte = sd.open("4T.txt", O_READ);
-    for(int i = 0; i < 5825; i++){
+    for(uint16_t i = 0; i < 5825; i++){
     realNoise4T[i] = soundByte.parseFloat();
     }
     Serial.print("Loaded ");
@@ -70,7 +68,7 @@ void load4T(){
 
   void loadElectric(){
     soundByte = sd.open("Electric.txt", O_READ);
-    for(int i = 0; i < 2674; i++){
+    for(uint16_t i = 0; i < 2674; i++){
     realNoiseElectric[i] = soundByte.parseFloat();
     }
     Serial.print("Loaded ");
@@ -82,13 +80,12 @@ void load4T(){
   void Emulator(){
   state = !state;
   digitalWrite(SYNC_OUT, state);
-  COUNT_TOP++;
     switch(mode){
     case 0:
     if (COUNT_TOP == 4096){
       COUNT_TOP = 0;
     } else {
-      analogWrite(A14, realNoise4T[COUNT_TOP] + ranDistort);
+      analogWrite(A14, realNoise4T[COUNT_TOP]);
     }
     break;
 
@@ -96,7 +93,7 @@ void load4T(){
     if (COUNT_TOP == 255){
       COUNT_TOP = 0;
     } else {
-      analogWrite(A14, realNoise2T[COUNT_TOP] + ranDistort);
+      analogWrite(A14, realNoise2T[COUNT_TOP]);
     }
     break;
 
@@ -104,11 +101,12 @@ void load4T(){
     if (COUNT_TOP == 255){
       COUNT_TOP = 0;
     } else {
-      analogWrite(A14, realNoiseElectric[COUNT_TOP] + 100);
+      analogWrite(A14, realNoiseElectric[COUNT_TOP]);
     }
     break;
     }
     state = !state;
     digitalWrite(SYNC_OUT, state);
+    COUNT_TOP++;
   }
 
