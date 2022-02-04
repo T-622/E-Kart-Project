@@ -10,9 +10,10 @@ int COUNT_TOP = 0;
 int count = 0;
 int mode = 0;
 int SYNC_OUT = 6;
+int analog = 0;
 int realNoise4T[5825];
-float realNoise2T[255];
-float realNoiseElectric[2674];
+int realNoise2T[255];
+int realNoiseElectric[2674];
 bool state = false;
 
 SdFs sd;
@@ -45,6 +46,9 @@ void setup() {
 }
 void loop() {
    /*------Code Here (Nothing currently as timer is running system)------*/
+   analog = analogRead(A9);
+   analog = map(analog, 0, 4096, 35, 10);
+   timer4T.update(analog);
 }
 
 void idleSound(int mode) {                       // Usage of electric, 2T and 4T strokes to create "Idle" sound (Safety Purposes)
