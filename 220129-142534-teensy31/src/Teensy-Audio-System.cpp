@@ -41,7 +41,7 @@ void setup() {
   }
   Serial.println("SD Initialization complete");
   load4T();
-  timer4T.begin(Emulator, 22.67);
+  timer4T.begin(Emulator, 26);
 }
 void loop() {
    /*------Code Here (Nothing currently as timer is running system)------*/
@@ -130,5 +130,7 @@ void load4T(){
     }
     break;
     }
+    state = !state;
+    digitalWrite(SYNC_OUT, state);
   }
 
