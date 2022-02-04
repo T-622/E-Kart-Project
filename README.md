@@ -1,4 +1,4 @@
-# E-Kart-Project
+# E-Kart-Project [LEGACY BACKUP!]
 E-Kart .ino code for Teensy 3.2 - 3.6 boards
 
 Features:
