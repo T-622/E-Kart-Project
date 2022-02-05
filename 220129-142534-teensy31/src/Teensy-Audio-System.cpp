@@ -111,7 +111,7 @@ void load4T(){
   digitalWrite(SYNC_OUT, state);
     switch(mode){
     case 0:
-    if (COUNT_TOP == 4096){
+    if (COUNT_TOP == 5825){
       COUNT_TOP = 0;
     } else {
       analogWrite(A14, realNoise4T[COUNT_TOP]);
