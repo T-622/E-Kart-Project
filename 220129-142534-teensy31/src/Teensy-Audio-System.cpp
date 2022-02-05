@@ -34,7 +34,7 @@ uint16_t analog = 0;
 uint16_t SYNC_OUT = 6;
 uint16_t realNoise4T[5825];
 uint16_t realNoise2T[255];
-uint16_t realNoiseElectric[2673];
+uint16_t realNoiseElectric[4034];
 bool state = false;
 
 SdFs sd;
@@ -47,7 +47,7 @@ void loadElectric();
 void Emulator();
 
 void setup() {
-  mode = 0;
+  mode = 2;
 
   pinMode(SYNC_OUT, OUTPUT);                        // Pin Declarations
   analogWriteResolution(12);                        // Analog R/W resolution change (Dumb down to ~10 bits for lower mem usage)
@@ -63,7 +63,7 @@ void setup() {
   }
   Serial.println("SD Initialization complete");
 
-  load4T();
+  loadElectric();
 
   timer4T.begin(Emulator, 26);
 }
@@ -97,7 +97,7 @@ void load4T(){
 
   void loadElectric(){
     soundByte = sd.open("Electric.txt", O_READ);
-    for(uint16_t i = 0; i < 2673; i++){
+    for(uint16_t i = 0; i < 4034; i++){
     realNoiseElectric[i] = soundByte.parseInt();
     }
     Serial.print("Loaded ");
@@ -113,6 +113,7 @@ void load4T(){
     case 0:
     if (COUNT_TOP == 5825){
       COUNT_TOP = 0;
+      analogWrite(A14, realNoise4T[COUNT_TOP]);
     } else {
       analogWrite(A14, realNoise4T[COUNT_TOP]);
     }
@@ -121,13 +122,15 @@ void load4T(){
     case 1:
     if (COUNT_TOP == 255){
       COUNT_TOP = 0;
+      analogWrite(A14, realNoise2T[COUNT_TOP]);
     } else {
       analogWrite(A14, realNoise2T[COUNT_TOP]);
     }
     break;
 
     case 2:
-    if (COUNT_TOP == 2673){
+    if (COUNT_TOP == 4034){
+      analogWrite(A14, realNoiseElectric[0]);
       COUNT_TOP = 0;
     } else {
       analogWrite(A14, realNoiseElectric[COUNT_TOP]);
