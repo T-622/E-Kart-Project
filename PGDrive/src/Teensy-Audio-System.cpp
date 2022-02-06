@@ -47,7 +47,7 @@ void loadElectric();
 void Emulator();
 
 void setup() {
-  mode = 0;
+  mode = 2;
 
   pinMode(SYNC_OUT, OUTPUT);                        // Pin Declarations
   analogWriteResolution(12);                        // Analog R/W resolution change (Dumb down to ~10 bits for lower mem usage)
@@ -63,7 +63,7 @@ void setup() {
   }
   Serial.println("SD Initialization complete");
 
-  load4T();
+  loadElectric();
 
   timer4T.begin(Emulator, 26);
 }
