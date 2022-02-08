@@ -35,6 +35,8 @@ uint16_t SYNC_OUT = 6;
 uint16_t realNoise4T[5825];
 uint16_t realNoise2T[255];
 uint16_t realNoiseElectric[4034];
+float SCALE = 1.00;
+float OUT = 0.00;
 bool state = false;
 
 SdFs sd;
@@ -115,7 +117,8 @@ void load4T(){
       COUNT_TOP = 0;
       analogWrite(A14, realNoise4T[COUNT_TOP]);
     } else {
-      analogWrite(A14, realNoise4T[COUNT_TOP]);
+      OUT = (realNoise4T[COUNT_TOP] - 512) * SCALE + 512;   // Scale raw DAC values based on a scalar value (Volume)
+      analogWrite(A14, OUT);
     }
     break;
 
