@@ -35,7 +35,7 @@ uint16_t SYNC_OUT = 6;
 uint16_t realNoise4T[5825];
 uint16_t realNoise2T[255];
 uint16_t realNoiseElectric[4034];
-float SCALE = 1.00;
+float SCALE = 0.20;
 float OUT = 0.00;
 bool state = false;
 
@@ -47,9 +47,10 @@ void load4T();
 void load2T();
 void loadElectric();
 void Emulator();
+void updateRPM();
 
 void setup() {
-  mode = 2;
+  mode = 0;
 
   pinMode(SYNC_OUT, OUTPUT);                        // Pin Declarations
   analogWriteResolution(12);                        // Analog R/W resolution change (Dumb down to ~10 bits for lower mem usage)
@@ -65,7 +66,7 @@ void setup() {
   }
   Serial.println("SD Initialization complete");
 
-  loadElectric();
+  load4T();
 
   timer4T.begin(Emulator, 26);
 }
@@ -143,5 +144,10 @@ void load4T(){
     state = !state;
     digitalWrite(SYNC_OUT, state);
     COUNT_TOP++;
+  }
+
+  void updateRPM(uint16_t rpm){
+    rpm = map(rpm, 0, 14000, 35, 5);
+    timer4T.update(analog);
   }
 
