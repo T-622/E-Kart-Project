@@ -128,6 +128,7 @@ void load4T(){
       COUNT_TOP = 0;
       analogWrite(A14, realNoise2T[COUNT_TOP]);
     } else {
+      OUT = (realNoise2T[COUNT_TOP] - 512) * SCALE + 512;   // Scale raw DAC values based on a scalar value (Volume)
       analogWrite(A14, realNoise2T[COUNT_TOP]);
     }
     break;
@@ -137,6 +138,7 @@ void load4T(){
       analogWrite(A14, realNoiseElectric[0]);
       COUNT_TOP = 0;
     } else {
+      OUT = (realNoiseElectric[COUNT_TOP] - 512) * SCALE + 512;   // Scale raw DAC values based on a scalar value (Volume)
       analogWrite(A14, realNoiseElectric[COUNT_TOP]);
     }
     break;
