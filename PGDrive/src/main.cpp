@@ -26,12 +26,15 @@ SOFTWARE.
 #include <MotorControllers/Vesc.h>
 #include <Sensors/HallThrottle.h>
 
+// Simple VESC demo -- feel free to delete or comment out
 VescCAN vesc(0x02);
 HallThrottle throttle(PIN_A9, 265, 1023);
 
 void setup() {
   delay(1000);
   // put your setup code here, to run once:
+
+  // Simple VESC demo -- feel free to delete or comment out
   pinMode(LED_BUILTIN, OUTPUT);
   Can0_wrapper.begin(250000);
   vesc.begin();
@@ -40,7 +43,7 @@ void setup() {
 void loop() {
   delay(250);
 
-  // Simple VESC demo
+  // Simple VESC demo -- feel free to delete or comment out
   vesc.printData();
   Serial.print("Throttle: ");Serial.print(throttle.readPercent() * 100);Serial.println("%");
   vesc.commandCurrent(2.0*throttle.readPercent());
