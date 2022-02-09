@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include <Arduino.h>
+#include <Arduino.h> 
 #include <SPI.h>
 #include <SdFat.h>
 #define SD_CS 10
@@ -35,6 +35,8 @@ uint16_t SYNC_OUT = 6;
 uint16_t realNoise4T[5825];
 uint16_t realNoise2T[255];
 uint16_t realNoiseElectric[4034];
+float SCALE = 0.20;
+float OUT = 0.00;
 bool state = false;
 
 SdFs sd;
@@ -45,9 +47,10 @@ void load4T();
 void load2T();
 void loadElectric();
 void Emulator();
+void updateRPM();
 
 void setup() {
-  mode = 2;
+  mode = 0;
 
   pinMode(SYNC_OUT, OUTPUT);                        // Pin Declarations
   analogWriteResolution(12);                        // Analog R/W resolution change (Dumb down to ~10 bits for lower mem usage)
@@ -63,7 +66,7 @@ void setup() {
   }
   Serial.println("SD Initialization complete");
 
-  loadElectric();
+  load4T();
 
   timer4T.begin(Emulator, 26);
 }
@@ -115,7 +118,8 @@ void load4T(){
       COUNT_TOP = 0;
       analogWrite(A14, realNoise4T[COUNT_TOP]);
     } else {
-      analogWrite(A14, realNoise4T[COUNT_TOP]);
+      OUT = (realNoise4T[COUNT_TOP] - 512) * SCALE + 512;   // Scale raw DAC values based on a scalar value (Volume)
+      analogWrite(A14, OUT);
     }
     break;
 
@@ -124,6 +128,7 @@ void load4T(){
       COUNT_TOP = 0;
       analogWrite(A14, realNoise2T[COUNT_TOP]);
     } else {
+      OUT = (realNoise2T[COUNT_TOP] - 512) * SCALE + 512;   // Scale raw DAC values based on a scalar value (Volume)
       analogWrite(A14, realNoise2T[COUNT_TOP]);
     }
     break;
@@ -133,6 +138,7 @@ void load4T(){
       analogWrite(A14, realNoiseElectric[0]);
       COUNT_TOP = 0;
     } else {
+      OUT = (realNoiseElectric[COUNT_TOP] - 512) * SCALE + 512;   // Scale raw DAC values based on a scalar value (Volume)
       analogWrite(A14, realNoiseElectric[COUNT_TOP]);
     }
     break;
@@ -140,5 +146,10 @@ void load4T(){
     state = !state;
     digitalWrite(SYNC_OUT, state);
     COUNT_TOP++;
+  }
+
+  void updateRPM(uint16_t rpm){
+    rpm = map(rpm, 0, 14000, 35, 5);
+    timer4T.update(analog);
   }
 
