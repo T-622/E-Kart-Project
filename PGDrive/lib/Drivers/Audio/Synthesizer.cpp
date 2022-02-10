@@ -17,8 +17,7 @@ float SCALE = 1.00;
 float OUT = 0.00;
 bool state = false;
 
-void Synthesizer::begin(uint16_t loadMode){ 
-    Serial.begin(9600);
+void Synthesizer::start(uint16_t loadMode){ 
     loadMode = mode;
     pinMode(SYNC_OUT, OUTPUT);
     analogWriteResolution(12);                        // Analog R/W resolution change (Dumb down to ~10 bits for lower mem usage)
