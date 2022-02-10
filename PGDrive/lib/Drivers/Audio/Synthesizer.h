@@ -7,11 +7,9 @@ class Synthesizer{
     public:
     void begin(uint16_t loadMode);
     void updateRPM(uint16_t rpm);
-    static void Emulator();
     private:
-   
+    static void Emulator();
 };
-
 
 
 #endif

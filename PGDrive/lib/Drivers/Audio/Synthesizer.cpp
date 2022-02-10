@@ -76,7 +76,7 @@ void Synthesizer::updateRPM(uint16_t rpm){
     TMR0.update(analog);
 }
 
-void Emulator(){
+void Synthesizer::Emulator(){
   state = !state;
   digitalWrite(SYNC_OUT, state);
     switch(mode){
