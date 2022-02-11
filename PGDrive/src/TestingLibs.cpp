@@ -3,7 +3,8 @@
 
 void setup() {
     Serial.begin(9600);
-    Synthesizer.start(0);
+    Synth1.begin(1);
+    Synth1.updateRPM(3400);
 }
 
 void loop() {
