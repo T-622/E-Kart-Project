@@ -25,12 +25,15 @@ SOFTWARE.
 #include <Arduino.h>
 #include <MotorControllers/Vesc.h>
 #include <Sensors/HallThrottle.h>
+#include <Audio/Synthesizer.h>
 
 // Simple VESC demo -- feel free to delete or comment out
 VescCAN vesc(0x02);
 HallThrottle throttle(PIN_A9, 265, 1023);
 
 void setup() {
+  Serial.begin(9600);
+  Synth1.begin(0);
   delay(1000);
   // put your setup code here, to run once:
 
