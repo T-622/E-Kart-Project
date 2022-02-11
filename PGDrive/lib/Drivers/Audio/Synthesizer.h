@@ -11,6 +11,9 @@ class Synthesizer{                  // Class Synthsizer
     private:
     float mapFloat(long x, long in_min, long in_max, long out_min, long out_max);
     uint8_t speed = 26;
+    uint8_t idle4T = 26;
+    uint8_t idle2T = 15;
+    uint8_t idleElectric = 20;
     uint16_t COUNT_TOP = 0;
     uint16_t SYNC_OUT = 6;
     uint16_t count = 0;
