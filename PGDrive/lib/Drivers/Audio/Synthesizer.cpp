@@ -94,7 +94,7 @@ digitalWrite(Synth1.SYNC_OUT, Synth1.state);
     Synth1.COUNT_TOP = 0;
     analogWrite(A14, Synth1.realNoise4T[Synth1.COUNT_TOP]);
    } else {
-    Synth1.SCALE = mapfloat(Synth1.speed, 35, 10, 0.5, 2.2);
+    Synth1.SCALE = mapfloat(Synth1.speed, 35, 10, 0.5, 3);
     Synth1.OUT = (Synth1.realNoise4T[Synth1.COUNT_TOP] - 512) * Synth1.SCALE + 512;   // Scale raw DAC values based on a scalar value (Volume)
     analogWrite(A14, Synth1.OUT);
    }

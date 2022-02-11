@@ -26,7 +26,7 @@ SOFTWARE.
 #include <MotorControllers/Vesc.h>
 #include <Sensors/HallThrottle.h>
 #include <Audio/Synthesizer.h>
-
+int analog = 0;
 // Simple VESC demo -- feel free to delete or comment out
 VescCAN vesc(0x02);
 HallThrottle throttle(PIN_A9, 265, 1023);
@@ -34,6 +34,7 @@ HallThrottle throttle(PIN_A9, 265, 1023);
 void setup() {
   Serial.begin(9600);
   Synth1.begin(0);
+
   delay(1000);
   // put your setup code here, to run once:
 
@@ -44,6 +45,9 @@ void setup() {
 }
 
 void loop() {
+  analog = analogRead(A9);
+  analog = map(analog, 0, 4096, 1800, 6100);
+  Synth1.updateRPM(analog);
   delay(250);
 
   // Simple VESC demo -- feel free to delete or comment out
