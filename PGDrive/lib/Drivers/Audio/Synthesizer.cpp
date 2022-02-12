@@ -52,7 +52,7 @@ void Synthesizer::begin(int loadMode){
    case 2:
     Serial.println("Loading Electric to MEM");
     soundByte = sd.open("Electric.arb", O_READ);
-    for(uint16_t i = 0; i < 4034; i++){
+    for(uint16_t i = 0; i < 4032; i++){
      Synth1.realNoiseElectric[i] = soundByte.parseInt();
     }
     Serial.print("Loaded ");
@@ -74,7 +74,7 @@ void Synthesizer::updateRPM(uint16_t rpm){
    break;
 
    case 1:
-    Synth1.speed = map(rpm, 0, 14000, 35, 5);
+    Synth1.speed = map(rpm, 0, 14000, 300, 85);
     TMR0.update(Synth1.speed);
    break;
 
@@ -105,9 +105,9 @@ digitalWrite(Synth1.SYNC_OUT, Synth1.state);
     Synth1.COUNT_TOP = 0;
     analogWrite(A14, Synth1.realNoise2T[Synth1.COUNT_TOP]);
    } else {
-    Synth1.SCALE = mapfloat(Synth1.speed, 35, 5, 0.8, 3);
-    Synth1.OUT = (Synth1.realNoise2T[Synth1.COUNT_TOP] - 512) * Synth1.SCALE + 512;   // Scale raw DAC values based on a scalar value (Volume)
-    analogWrite(A14, Synth1.realNoise2T[Synth1.COUNT_TOP]);
+    Synth1.SCALE = mapfloat(Synth1.speed, 35, 5, 0.8, 5);
+    Synth1.OUT = (Synth1.realNoise2T[Synth1.COUNT_TOP] - 100) * Synth1.SCALE + 100;   // Scale raw DAC values based on a scalar value (Volume)
+    analogWrite(A14, Synth1.OUT);
    }
   break;
 
@@ -117,9 +117,9 @@ digitalWrite(Synth1.SYNC_OUT, Synth1.state);
     Synth1.COUNT_TOP = 0;
    } else {
     Synth1.SCALE = mapfloat(Synth1.speed, 35, 5, 0.8, 3);
-    Synth1.OUT = (Synth1.realNoiseElectric[Synth1.COUNT_TOP] - 512) * Synth1.SCALE + 512;   // Scale raw DAC values based on a scalar value (Volume)
-    analogWrite(A14, Synth1.realNoiseElectric[Synth1.COUNT_TOP]);
-   }
+    Synth1.OUT = (Synth1.realNoiseElectric[Synth1.COUNT_TOP] - 300) * Synth1.SCALE + 300;   // Scale raw DAC values based on a scalar value (Volume)
+    analogWrite(A14, Synth1.OUT);
+   }  
   break;
 }
 Synth1.state = !Synth1.state;

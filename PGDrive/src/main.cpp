@@ -33,7 +33,7 @@ HallThrottle throttle(PIN_A9, 265, 1023);
 
 void setup() {
   Serial.begin(9600);
-  Synth1.begin(0);
+  Synth1.begin(2);
 
   delay(1000);
   // put your setup code here, to run once:
@@ -46,7 +46,7 @@ void setup() {
 
 void loop() {
   analog = analogRead(A9);
-  analog = map(analog, 0, 4096, 1800, 6100);
+  analog = map(analog, 0, 4096, 0, 14000);
   Synth1.updateRPM(analog);
   delay(250);
 
