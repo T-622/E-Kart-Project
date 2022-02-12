@@ -112,12 +112,11 @@ digitalWrite(Synth1.SYNC_OUT, Synth1.state);
   break;
 
   case 2:
-   if (Synth1.COUNT_TOP == 4034){
-    analogWrite(A14, Synth1.realNoiseElectric[0]);
+   if (Synth1.COUNT_TOP == 4032){
     Synth1.COUNT_TOP = 0;
    } else {
     Synth1.SCALE = mapfloat(Synth1.speed, 35, 5, 0.8, 3);
-    Synth1.OUT = (Synth1.realNoiseElectric[Synth1.COUNT_TOP] - 300) * Synth1.SCALE + 300;   // Scale raw DAC values based on a scalar value (Volume)
+    Synth1.OUT = (Synth1.realNoiseElectric[Synth1.COUNT_TOP] - 250) * Synth1.SCALE + 250;   // Scale raw DAC values based on a scalar value (Volume)
     analogWrite(A14, Synth1.OUT);
    }  
   break;

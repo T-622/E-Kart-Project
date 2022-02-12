@@ -16,6 +16,7 @@ class Synthesizer{                  // Class Synthsizer
     uint8_t idleElectric = 20;
     uint16_t COUNT_TOP = 0;
     uint16_t SYNC_OUT = 6;
+    uint16_t PULSE_OUT = 7;
     uint16_t count = 0;
     uint16_t runMode = 0;
     uint16_t analog = 0;
@@ -25,6 +26,7 @@ class Synthesizer{                  // Class Synthsizer
     float SCALE = 1.00;
     float OUT = 0.00;
     bool state = false;
+    bool state2 = false;
     
 };
 
