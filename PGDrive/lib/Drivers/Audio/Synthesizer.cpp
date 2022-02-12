@@ -27,7 +27,7 @@ void Synthesizer::begin(int loadMode){
   switch(loadMode){   
    case 0:
     Serial.println("Loading 4S to MEM");
-    soundByte = sd.open("4T.txt", O_READ);
+    soundByte = sd.open("4T.arb", O_READ);
     for(uint16_t i = 0; i < 5825; i++){
      Synth1.realNoise4T[i] = soundByte.parseInt();
     }
@@ -39,7 +39,7 @@ void Synthesizer::begin(int loadMode){
 
    case 1:
     Serial.println("Loading 2S to MEM");
-    soundByte = sd.open("2T.txt", O_READ);
+    soundByte = sd.open("2T.arb", O_READ);
     for(int i = 0; i < 255; i++){
      Synth1.realNoise2T[i] = soundByte.parseInt();
     }
@@ -51,7 +51,7 @@ void Synthesizer::begin(int loadMode){
 
    case 2:
     Serial.println("Loading Electric to MEM");
-    soundByte = sd.open("Electric.txt", O_READ);
+    soundByte = sd.open("Electric.arb", O_READ);
     for(uint16_t i = 0; i < 4034; i++){
      Synth1.realNoiseElectric[i] = soundByte.parseInt();
     }
