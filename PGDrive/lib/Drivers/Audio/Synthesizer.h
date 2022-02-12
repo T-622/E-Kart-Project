@@ -5,8 +5,9 @@
 
 class Synthesizer{                  // Class Synthsizer
     public:                         // Public elements (User accessible functions and variables for class Synthesizer) Accessible by each object
-    void begin(int loadMode); 
+    void begin(uint16_t loadMode); 
     void updateRPM(uint16_t rpm);
+    void restart(uint16_t newMode);
     static void Emulator();         // Private static element for sound emulation
     private:
     uint8_t idle4T = 26;

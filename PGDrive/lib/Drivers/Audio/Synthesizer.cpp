@@ -6,7 +6,7 @@ IntervalTimer TMR0;
 SdFs sd;
 FsFile soundByte;
 
-void Synthesizer::begin(int loadMode){ 
+void Synthesizer::begin(uint16_t loadMode){ 
   Serial.println(loadMode);
   Synth1.runMode = loadMode;
   pinMode(Synth1.SYNC_OUT, OUTPUT);
@@ -103,6 +103,12 @@ digitalWrite(Synth1.SYNC_OUT, Synth1.state);
 Synth1.state = !Synth1.state;
 digitalWrite(Synth1.SYNC_OUT, Synth1.state);
  Synth1.COUNT_TOP++;
+}
+
+void Synthesizer::restart(uint16_t newMode){
+  TMR0.end();
+  Synth1.runMode = newMode;
+  begin(newMode);
 }
 
 Synthesizer Synth1;
