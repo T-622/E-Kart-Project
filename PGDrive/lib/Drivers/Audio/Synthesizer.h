@@ -8,6 +8,7 @@ class Synthesizer{                  // Class Synthsizer
     void begin(int loadMode); 
     void updateRPM(uint16_t rpm);
     static void Emulator();         // Private static element for sound emulation
+    uint32_t freeMem();
     private:
     float mapFloat(long x, long in_min, long in_max, long out_min, long out_max);
     uint8_t speed = 26;

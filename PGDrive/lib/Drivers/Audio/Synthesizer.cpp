@@ -126,6 +126,22 @@ digitalWrite(Synth1.SYNC_OUT, Synth1.state);
  Synth1.COUNT_TOP++;
 }
 
+uint32_t Synthesizer::freeMem(){ 
+    uint32_t stackTop;
+    uint32_t heapTop;
+
+    // current position of the stack.
+    stackTop = (uint32_t) &stackTop;
+
+    // current position of heap.
+    void* hTop = malloc(1);
+    heapTop = (uint32_t) hTop;
+    free(hTop);
+
+    // The difference is (approximately) the free, available ram.
+    return stackTop - heapTop;
+}
+
 Synthesizer Synth1;
 
 
