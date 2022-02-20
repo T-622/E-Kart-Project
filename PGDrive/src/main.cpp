@@ -33,8 +33,8 @@ HallThrottle throttle(PIN_A9, 265, 1023);
 
 void setup() {
   Serial.begin(9600);
-  Serial.print(Synth1.freeMem());
-  Serial.println(" Bytes");
+  Serial.print(Synth1.freeMem()/1024);
+  Serial.println(" KBytes");
   Synth1.begin(2);
 
   delay(1000);

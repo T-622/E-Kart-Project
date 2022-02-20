@@ -5,9 +5,10 @@
 
 class Synthesizer{                  // Class Synthsizer
     public:                         // Public elements (User accessible functions and variables for class Synthesizer) Accessible by each object
-    void begin(int loadMode); 
+    void begin(uint8_t loadMode); 
     void updateRPM(uint16_t rpm);
     static void Emulator();         // Private static element for sound emulation
+    void restartModule(uint8_t rebootMode);
     uint32_t freeMem();
     private:
     float mapFloat(long x, long in_min, long in_max, long out_min, long out_max);
@@ -21,9 +22,7 @@ class Synthesizer{                  // Class Synthsizer
     uint16_t count = 0;
     uint16_t runMode = 0;
     uint16_t analog = 0;
-    uint16_t realNoise4T[5825];     // DO NOT CREATE STRUCT. This will increase memory usage by allocating all memory at boot
-    uint16_t realNoise2T[255];
-    uint16_t realNoiseElectric[4032];
+    uint16_t soundData[5825];     // DO NOT CREATE STRUCT. This will increase memory usage by allocating all memory at boot
     float SCALE = 1.00;
     float OUT = 0.00;
     bool state = false;
