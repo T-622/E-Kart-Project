@@ -15,8 +15,10 @@ Current Code:
 - CAN BUS example software [CAN-Transmitter] and [CAN-Reciever] .ino sketches
 
 To Do:
-- Random noise generator
-- CAN bus access for VESC?
+
 
 Done:
+- Audio-System.h Library
 - SD card read function. This reads and parses a string of data on an SD card with required waveform points and only stores the desired waveforms in memory rather than storing all of them <Samples.h>
+- Random noise generator
+- CAN bus access for VESC?
