@@ -20,32 +20,38 @@ void VescCAN::printData() {
 }
 
 void VescCAN::commandCurrent(float current) {
-  CAN_message_t msg = {};
-  msg.id = ((((uint32_t)VescCommands::SET_CURRENT) << 8) | vesc_id_);
-  msg.flags.extended = true;
-  msg.len = 8;
+  VescPacketData data= {};
   int32_t current_1000 = (int32_t)(current * 1000.0f);
-  VescPacketSetCurrent* cmd_packet = (VescPacketSetCurrent*)msg.buf;
-  cmd_packet->current = __builtin_bswap32((uint32_t)current_1000);
-  cmd_packet->__unused__ = 0;
-  if (!can_wrapper_.write(msg)) {
+  data.set_current.current = current_1000;
+  if (!writeCANCmd(VescCommands::SET_CURRENT, data)) {
     Serial.println("Failed to send current command");
   }
 }
 
+void VescCAN::setCurrentLimit(float current_limit) {
+  VescPacketData data= {};
+  int32_t current_limit_1000 = (int32_t)(current_limit * 1000.0f);
+  data.conf_current_limits.max_current_1000 = current_limit_1000;
+  data.conf_current_limits.min_current_1000 = -current_limit_1000;
+  if (!writeCANCmd(VescCommands::CONF_CURRENT_LIMITS, data)) {
+    Serial.println("Failed to send current limit command");
+  }
+}
 
 void VescCAN::CANMsgCallback(const CAN_message_t &msg) {
   if ((msg.id & vesc_id_) != vesc_id_) {
     Serial.println("Got message efor wrong vesc! Check configuration");
     return;
   }
+  VescPacketData data;
+  memcpy(data.buf, msg.buf, 8); // Could just cast the pointer, but compiler doesn't like that :P
+  data.data = __builtin_bswap64(data.data);
   switch ((msg.id & 0x0000FF00) >> 8) {
     case VescCommands::STATUS:
     {
-      VescPacketStatus* status = (VescPacketStatus*)msg.buf;
-      rpm_ = (int32_t)__builtin_bswap32(status->rpm);
-      duty_cycle_ = ((int16_t)__builtin_bswap16(status->duty_cycle_1000)) / 1000.0f;
-      current_ = ((int16_t)__builtin_bswap16(status->current_10)) / 10.0f;
+      rpm_ = data.status.rpm;
+      duty_cycle_ = data.status.duty_cycle_1000 / 1000.0f;
+      current_ = data.status.current_10 / 10.0f;
       break;
     }
     default:
@@ -53,3 +59,16 @@ void VescCAN::CANMsgCallback(const CAN_message_t &msg) {
       break;
   }
 }
+
+bool VescCAN::writeCANCmd(VescCommands cmd, const VescPacketData& data) {
+  VescPacketData reversed_data {
+    .data = __builtin_bswap64(data.data)
+  };
+  CAN_message_t msg = {};
+  msg.id = ((((uint32_t)cmd) << 8) | vesc_id_);
+  msg.flags.extended = true;
+  msg.len = 8;
+  memcpy(msg.buf, reversed_data.buf, 8);
+  return can_wrapper_.write(msg);
+}
+

@@ -11,6 +11,7 @@ public:
   void printData();
 
   void commandCurrent(float current);
+  void setCurrentLimit(float current_limit);
 
 protected:
   virtual void CANMsgCallback(const CAN_message_t& msg);
@@ -52,14 +53,30 @@ private:
   // Might be cleanest to reverse order of structs and bswap the whole buffer
   // Instead of remembering to bswap every element we read/write
   struct __attribute__ ((packed)) VescPacketStatus {
-    int32_t rpm;
-    int16_t current_10;
     int16_t duty_cycle_1000;
+    int16_t current_10;
+    int32_t rpm;
   };
   struct __attribute__ ((packed)) VescPacketSetCurrent {
-    int32_t current;
     int32_t __unused__;
+    int32_t current;
   };
+  struct __attribute__ ((packed)) VescPacketConfCurrentLimits {
+    int32_t max_current_1000;
+    int32_t min_current_1000;
+  };
+  union VescPacketData
+  {
+    /* data */
+    uint8_t buf[8];
+    uint64_t data;
+    VescPacketStatus            status;
+    VescPacketSetCurrent        set_current;
+    VescPacketConfCurrentLimits conf_current_limits;
+  };
+
+  bool writeCANCmd(VescCommands cmd, const VescPacketData& data);
+  
 
   CANWrapper& can_wrapper_;
   uint8_t vesc_id_;

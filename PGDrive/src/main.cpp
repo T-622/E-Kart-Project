@@ -26,16 +26,22 @@ SOFTWARE.
 #include <MotorControllers/Vesc.h>
 #include <Sensors/HallThrottle.h>
 #include <Audio/Synthesizer.h>
+#include <SmartPedal.h>
 int analog = 0;
 // Simple VESC demo -- feel free to delete or comment out
 VescCAN vesc(0x02);
 HallThrottle throttle(PIN_A9, 265, 1023);
+SmartPedal::RaceConfig race_config {
+  .power_rating = 4000,
+  .power_adjustment = 0.0
+};
+SmartPedal smart_pedal(vesc);
 
 void setup() {
   Serial.begin(9600);
-  Serial.print(Synth1.freeMem()/1024);
-  Serial.println(" KBytes");
-  Synth1.begin(2);
+  // Serial.print(Synth1.freeMem()/1024);
+  // Serial.println(" KBytes");
+  // Synth1.begin(2);
 
   delay(1000);
   // put your setup code here, to run once:
@@ -44,17 +50,23 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   Can0_wrapper.begin(250000);
   vesc.begin();
+  smart_pedal.init(toms_motor_conf, race_config);
 }
-
+bool updated = false;
 void loop() {
   analog = analogRead(A9);
   analog = map(analog, 0, 4096, 0, 14000);
-  Synth1.updateRPM(analog);
-  delay(250);
+  // Synth1.updateRPM(analog);
+  delay(100);
 
   // Simple VESC demo -- feel free to delete or comment out
   vesc.printData();
   Serial.print("Throttle: ");Serial.print(throttle.readPercent() * 100);Serial.println("%");
-  vesc.commandCurrent(2.0*throttle.readPercent());
+
+  smart_pedal.setThrottle(throttle.readPercent());
+
+
+
+
 
 }
