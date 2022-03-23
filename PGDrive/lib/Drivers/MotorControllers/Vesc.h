@@ -13,6 +13,16 @@ public:
   void commandCurrent(float current);
   void setCurrentLimit(float current_limit);
 
+  struct VescStats {
+    float current;
+    float duty;
+    float erpm;
+    float input_current;
+    float input_voltage;
+  };
+
+  void getStats(VescStats& stats);
+
 protected:
   virtual void CANMsgCallback(const CAN_message_t& msg);
 
@@ -57,6 +67,27 @@ private:
     int16_t current_10;
     int32_t rpm;
   };
+  struct __attribute__ ((packed)) VescPacketStatus2 {
+    int32_t amphours_charged_10000;
+    int32_t amphours_drawn_10000;
+  };
+  struct __attribute__ ((packed)) VescPacketStatus3 {
+    int32_t watthours_charged_10000;
+    int32_t watthours_drawn_10000;
+  };
+  struct __attribute__ ((packed)) VescPacketStatus4 {
+    int16_t pid_pos_50;
+    int16_t input_current_10;
+    int16_t motor_temp_10;
+    int16_t fet_temp_10;
+  };
+  struct __attribute__ ((packed)) VescPacketStatus5 {
+    int16_t __unused__;
+    int16_t input_voltage_10;
+    int32_t tachometer;
+  };
+
+
   struct __attribute__ ((packed)) VescPacketSetCurrent {
     int32_t __unused__;
     int32_t current;
@@ -71,6 +102,10 @@ private:
     uint8_t buf[8];
     uint64_t data;
     VescPacketStatus            status;
+    VescPacketStatus2           status2;
+    VescPacketStatus3           status3;
+    VescPacketStatus4           status4;
+    VescPacketStatus5           status5;
     VescPacketSetCurrent        set_current;
     VescPacketConfCurrentLimits conf_current_limits;
   };
@@ -84,6 +119,8 @@ private:
   float current_ = 0;
   int32_t rpm_ = 0;
   float duty_cycle_ = 0;
+  float input_current_ = 0;
+  float input_voltage_ = 0;
 
 };
 

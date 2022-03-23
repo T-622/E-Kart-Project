@@ -51,22 +51,19 @@ void setup() {
   Can0_wrapper.begin(250000);
   vesc.begin();
   smart_pedal.init(toms_motor_conf, race_config);
+  smart_pedal.printInfoCsvHeader();
 }
 bool updated = false;
 void loop() {
   analog = analogRead(A9);
   analog = map(analog, 0, 4096, 0, 14000);
   // Synth1.updateRPM(analog);
-  delay(100);
+  delay(50);
 
   // Simple VESC demo -- feel free to delete or comment out
   vesc.printData();
   Serial.print("Throttle: ");Serial.print(throttle.readPercent() * 100);Serial.println("%");
 
   smart_pedal.setThrottle(throttle.readPercent());
-
-
-
-
-
+  smart_pedal.printInfoCsv();
 }

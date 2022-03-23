@@ -43,6 +43,10 @@ public:
 
   void setThrottle(float throttle);
 
+  void printInfo();
+  void printInfoCsvHeader();
+  void printInfoCsv();
+
 private:
   // config
   VescCAN &vesc_;
@@ -53,6 +57,9 @@ private:
   // TODO: pingpong until connected to vesc
   float max_torque_;
   float max_current_;
+
+  float current_command_;
+  float throttle_;
 };
 
 extern SmartPedal::MotorConfig toms_motor_conf;

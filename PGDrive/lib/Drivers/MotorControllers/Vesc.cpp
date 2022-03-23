@@ -49,9 +49,20 @@ void VescCAN::CANMsgCallback(const CAN_message_t &msg) {
   switch ((msg.id & 0x0000FF00) >> 8) {
     case VescCommands::STATUS:
     {
-      rpm_ = data.status.rpm;
-      duty_cycle_ = data.status.duty_cycle_1000 / 1000.0f;
-      current_ = data.status.current_10 / 10.0f;
+      rpm_ = (0.9f*rpm_) + 0.1f* data.status.rpm;
+      duty_cycle_ = (0.9f*duty_cycle_) + 0.1f* data.status.duty_cycle_1000 / 1000.0f;
+      current_ = (0.9f*current_) + 0.1f*data.status.current_10 / 10.0f;
+      break;
+    }
+    case VescCommands::STATUS_4:
+    {
+      input_current_ = (0.9f* input_current_) + 0.1f*data.status4.input_current_10 / 10.0f;
+      break;
+    }
+    case VescCommands::STATUS_5:
+    {
+      // Serial.print("old avg: ");Serial.print(input_voltage_);Serial.print(" 0.9o");Serial.print(0.9f*input_voltage_);Serial.print(" in ");Serial.print(data.status5.input_voltage_10);Serial.print(" t2 ");Serial.println((0.1f* data.status5.input_voltage_10 / 10.0f));
+      input_voltage_ =(0.9f*input_voltage_) + (0.1f* data.status5.input_voltage_10 / 10.0f);
       break;
     }
     default:
@@ -70,5 +81,13 @@ bool VescCAN::writeCANCmd(VescCommands cmd, const VescPacketData& data) {
   msg.len = 8;
   memcpy(msg.buf, reversed_data.buf, 8);
   return can_wrapper_.write(msg);
+}
+
+void VescCAN::getStats(VescStats& stats) {
+  stats.current = current_;
+  stats.duty = duty_cycle_;
+  stats.erpm = rpm_;
+  stats.input_current = input_current_;
+  stats.input_voltage = input_voltage_;
 }
 

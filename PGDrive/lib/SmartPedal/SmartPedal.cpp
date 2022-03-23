@@ -44,9 +44,54 @@ void SmartPedal::setRaceConfig(const RaceConfig& race_config) {
 }
 
 void SmartPedal::setThrottle(float throttle) {
-  float torque_command = throttle * max_torque_;
-  float current_command = throttle * max_current_;
-  Serial.print("Throttle cmd: ");Serial.print(throttle);Serial.print(". Sending current: ");Serial.println(current_command);
-  vesc_.commandCurrent(current_command);
+  // float torque_command = throttle * max_torque_;
+  current_command_ = throttle * max_current_;
+  Serial.print("Throttle cmd: ");Serial.print(throttle);Serial.print(". Sending current: ");Serial.println(current_command_);
+  vesc_.commandCurrent(current_command_);
+  throttle_ = throttle;
+}
 
+void SmartPedal::printInfo() {
+  VescCAN::VescStats vesc_stats;
+  vesc_.getStats(vesc_stats);
+
+  char output[512];
+  sprintf(output,
+          "Time: %lu, maxpower: %f, max_rpm: %f, max_torque: %f, max_current: %f, "
+          "throttle: %f, cmd: %f, current: %f, rpm: %f, "
+          "vbat: %f, vmot: %f, cur_bat: %f, torque: %f, "
+          "p_bat: %f, p_mot: %f, p_shaft:%f",
+          millis(), race_config_.power_rating,motor_config_.rated_rpm, max_torque_,max_current_,
+          throttle_, current_command_, vesc_stats.current, vesc_stats.erpm/motor_config_.pole_count,
+          vesc_stats.input_voltage, vesc_stats.input_voltage * vesc_stats.duty, vesc_stats.input_current,vesc_stats.current * motor_config_.torque_const,
+          vesc_stats.input_current * vesc_stats.input_voltage,
+          vesc_stats.input_voltage * vesc_stats.duty * vesc_stats.current,
+          vesc_stats.current * motor_config_.torque_const * rpmToRadS(vesc_stats.erpm/motor_config_.pole_count)
+  );
+  Serial.println(output);
+}
+void SmartPedal::printInfoCsvHeader() {
+  Serial.println("Time,maxpower,max_rpm,max_torque,max_current,"
+          "throttle,cmd,current,rpm,"
+          "vbat,vmot,cur_bat,torque,"
+          "p_bat,p_mot,p_shaft");
+}
+void SmartPedal::printInfoCsv() {
+  VescCAN::VescStats vesc_stats;
+  vesc_.getStats(vesc_stats);
+
+  char output[512];
+  sprintf(output,
+          "%lu,%f,%f,%f,%f,"
+          "%f,%f,%f,%f,"
+          "%f,%f,%f,%f,"
+          "%f,%f,%f",
+          millis(), race_config_.power_rating,motor_config_.rated_rpm, max_torque_,max_current_,
+          throttle_, current_command_, vesc_stats.current, vesc_stats.erpm/motor_config_.pole_count,
+          vesc_stats.input_voltage, vesc_stats.input_voltage * vesc_stats.duty, vesc_stats.input_current,vesc_stats.current * motor_config_.torque_const,
+          vesc_stats.input_current * vesc_stats.input_voltage,
+          vesc_stats.input_voltage * vesc_stats.duty * vesc_stats.current,
+          vesc_stats.current * motor_config_.torque_const * rpmToRadS(vesc_stats.erpm/motor_config_.pole_count)
+  );
+  Serial.println(output);
 }
